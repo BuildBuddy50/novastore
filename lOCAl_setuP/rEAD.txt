@@ -2,3 +2,5 @@ eXTRACT AND RUN ON LOCAL
 
 npm install
 npm run
+https://buildbuddy50.github.io/novastore/
+https://novastore-fk1k.onrender.com/api/health
