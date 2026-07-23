@@ -1,0 +1,4 @@
+eXTRACT AND RUN ON LOCAL 
+
+npm install
+npm run
