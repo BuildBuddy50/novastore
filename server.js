@@ -254,4 +254,4 @@ app.get("/api/stats", auth, adminOnly, (req, res) => {
 
 app.get("/api/health", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 
-app.listen(PORT, () => console.log(`Nova Store API running at http://localhost:${PORT}/api`));
+app.listen(PORT, "0.0.0.0", () => console.log(`Nova Store API running on port ${PORT}`));
