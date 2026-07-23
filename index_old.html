@@ -28,7 +28,7 @@ const { useState, useEffect, createContext, useContext, useMemo, useCallback } =
 /* ============================================================
    API CONFIG  — change this to your deployed API URL
    ============================================================ */
-const API_BASE = localStorage.getItem("ns_api_base") || "http://localhost:4000/api";
+const API_BASE = localStorage.getItem("ns_api_base") || "https://novastore-fk1k.onrender.com/api";
 
 const money = (n) => "$" + Number(n).toFixed(2);
 
@@ -80,21 +80,21 @@ const TEST_CARDS = [
   { brand:"Discover", number:"6011 1111 1111 1117", cvc:"123", exp:"12/28" },
 ];
 
-function Field({ label, value, onChange, error, type="text", placeholder, testId, ...rest }) {
+function Field({ label, value, onChange, error, type="text", placeholder, ...rest }) {
   return (
     <div>
       {label && <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>}
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} data-testid={testId}
+      <input type={type} value={value} onChange={onChange} placeholder={placeholder}
         className={"w-full border rounded px-3 py-2 text-sm outline-none focus:ring-2 "+(error?"border-rose-400 focus:ring-rose-200":"focus:ring-indigo-200")} {...rest}/>
-      {error && <p data-testid={testId?testId+"-error":undefined} className="text-rose-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-rose-500 text-xs mt-1">{error}</p>}
     </div>
   );
 }
 function Spinner({ label="Loading…" }) {
-  return <div data-testid="loading-spinner" className="flex items-center justify-center gap-3 py-16 text-slate-400"><span className="spinner inline-block w-5 h-5 border-2 border-slate-300 border-t-indigo-500 rounded-full"></span>{label}</div>;
+  return <div className="flex items-center justify-center gap-3 py-16 text-slate-400"><span className="spinner inline-block w-5 h-5 border-2 border-slate-300 border-t-indigo-500 rounded-full"></span>{label}</div>;
 }
 function ErrorBox({ msg, onRetry }) {
-  return <div data-testid="error-box" className="max-w-lg mx-auto my-8 bg-rose-50 border border-rose-200 rounded-xl p-5 text-center"><p data-testid="error-message" className="text-rose-700 text-sm">{msg}</p>{onRetry && <button data-testid="error-retry" onClick={onRetry} className="mt-3 bg-rose-600 text-white text-sm px-4 py-2 rounded-lg">Retry</button>}</div>;
+  return <div className="max-w-lg mx-auto my-8 bg-rose-50 border border-rose-200 rounded-xl p-5 text-center"><p className="text-rose-700 text-sm">{msg}</p>{onRetry && <button onClick={onRetry} className="mt-3 bg-rose-600 text-white text-sm px-4 py-2 rounded-lg">Retry</button>}</div>;
 }
 function Stars({ value, size="text-sm" }) { const full=Math.round(value); return <span className={"text-amber-400 "+size}>{"★".repeat(full)}<span className="text-slate-300">{"★".repeat(5-full)}</span></span>; }
 
@@ -133,7 +133,7 @@ function StoreProvider({ children }) {
   return <Store.Provider value={value}>{children}</Store.Provider>;
 }
 
-function Toasts() { const { toasts } = useContext(Store); return <div data-testid="toast-container" className="fixed bottom-5 right-5 z-50 space-y-2">{toasts.map(t=>(<div key={t.id} data-testid="toast" className="toast bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2"><span>✓</span>{t.msg}</div>))}</div>; }
+function Toasts() { const { toasts } = useContext(Store); return <div className="fixed bottom-5 right-5 z-50 space-y-2">{toasts.map(t=>(<div key={t.id} className="toast bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2"><span>✓</span>{t.msg}</div>))}</div>; }
 
 /* ---------------- nav ---------------- */
 function Nav({ page, go, query, setQuery }) {
@@ -143,18 +143,18 @@ function Nav({ page, go, query, setQuery }) {
     <header className="bg-white border-b sticky top-0 z-40">
       <div className="bg-indigo-700 text-white text-center text-xs py-1.5">🚚 Free shipping over $75 · Use code <b>SAVE10</b> for 10% off</div>
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center gap-4">
-        <button data-testid="nav-logo" onClick={()=>go("shop")} className="flex items-center gap-2 shrink-0"><span className="text-2xl">🛍️</span><span className="text-xl font-bold text-indigo-700 hidden sm:inline">Nova Store</span></button>
-        <div className="flex-1 max-w-md"><input data-testid="nav-search" value={query} onChange={e=>{setQuery(e.target.value); go("shop");}} placeholder="Search products…" className="w-full border rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-300 outline-none" /></div>
+        <button onClick={()=>go("shop")} className="flex items-center gap-2 shrink-0"><span className="text-2xl">🛍️</span><span className="text-xl font-bold text-indigo-700 hidden sm:inline">Nova Store</span></button>
+        <div className="flex-1 max-w-md"><input value={query} onChange={e=>{setQuery(e.target.value); go("shop");}} placeholder="Search products…" className="w-full border rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-300 outline-none" /></div>
         <nav className="flex items-center gap-4 text-sm font-medium text-slate-600 shrink-0">
-          <button data-testid="nav-wishlist" onClick={()=>go("wishlist")} className="relative hidden sm:block">♡<span className="hidden md:inline"> Wishlist</span>{wishlist.length>0 && <span data-testid="wishlist-count" className="absolute -top-2 -right-3 bg-rose-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{wishlist.length}</span>}</button>
-          <button data-testid="nav-cart" onClick={()=>go("cart")} className="relative">🛒<span className="hidden md:inline"> Cart</span>{count>0 && <span data-testid="cart-count" className="absolute -top-2 -right-3 bg-indigo-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{count}</span>}</button>
+          <button onClick={()=>go("wishlist")} className="relative hidden sm:block">♡<span className="hidden md:inline"> Wishlist</span>{wishlist.length>0 && <span className="absolute -top-2 -right-3 bg-rose-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{wishlist.length}</span>}</button>
+          <button onClick={()=>go("cart")} className="relative">🛒<span className="hidden md:inline"> Cart</span>{count>0 && <span className="absolute -top-2 -right-3 bg-indigo-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">{count}</span>}</button>
           {currentUser ? (
             <div className="flex items-center gap-2">
-              {currentUser.role==="admin" && <button data-testid="nav-admin" onClick={()=>go("admin")} className={"px-3 py-1.5 rounded-lg bg-slate-800 text-white "+(page==="admin"?"ring-2 ring-indigo-400":"")}>Admin</button>}
-              <button data-testid="nav-account" onClick={()=>go("account")} className="hidden sm:inline text-slate-700">Hi, {currentUser.name.split(" ")[0]}</button>
-              <button data-testid="nav-logout" onClick={logout} className="text-slate-400 hover:text-rose-500">Logout</button>
+              {currentUser.role==="admin" && <button onClick={()=>go("admin")} className={"px-3 py-1.5 rounded-lg bg-slate-800 text-white "+(page==="admin"?"ring-2 ring-indigo-400":"")}>Admin</button>}
+              <button onClick={()=>go("account")} className="hidden sm:inline text-slate-700">Hi, {currentUser.name.split(" ")[0]}</button>
+              <button onClick={logout} className="text-slate-400 hover:text-rose-500">Logout</button>
             </div>
-          ) : (<button data-testid="nav-signin" onClick={()=>go("auth")} className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white">Sign in</button>)}
+          ) : (<button onClick={()=>go("auth")} className="px-3 py-1.5 rounded-lg bg-indigo-600 text-white">Sign in</button>)}
         </nav>
       </div>
     </header>
@@ -189,18 +189,18 @@ function AuthPage({ go }) {
     <div className="max-w-md mx-auto px-4 py-12 fade">
       <div className="bg-white border rounded-2xl p-6 shadow-sm">
         <div className="flex bg-slate-100 rounded-lg p-1 mb-5 text-sm">
-          {[["user","👤 Customer"],["admin","🛡️ Admin"]].map(([r,l])=>(<button key={r} data-testid={"auth-role-"+r} onClick={()=>{setRole(r); setMode("login"); setErrs({});}} className={"flex-1 py-2 rounded-md "+(role===r?"bg-white shadow font-medium":"text-slate-500")}>{l}</button>))}
+          {[["user","👤 Customer"],["admin","🛡️ Admin"]].map(([r,l])=>(<button key={r} onClick={()=>{setRole(r); setMode("login"); setErrs({});}} className={"flex-1 py-2 rounded-md "+(role===r?"bg-white shadow font-medium":"text-slate-500")}>{l}</button>))}
         </div>
         <h2 className="text-xl font-bold">{mode==="login" ? (role==="admin"?"Admin sign in":"Sign in to your account") : "Create your account"}</h2>
         <p className="text-sm text-slate-500 mt-1 mb-4">{role==="admin" ? "Restricted to store administrators." : (mode==="login"?"Welcome back!":"Join Nova Store in seconds.")}</p>
         <div className="space-y-3">
-          {mode==="register" && role==="user" && <Field testId="auth-name" label="Full name" value={f.name} onChange={e=>set("name",e.target.value)} error={errs.name} placeholder="Jane Doe"/>}
-          <Field testId="auth-email" label="Email" value={f.email} onChange={e=>set("email",e.target.value)} error={errs.email} placeholder="you@example.com"/>
-          <Field testId="auth-password" label="Password" type="password" value={f.password} onChange={e=>set("password",e.target.value)} error={errs.password} placeholder="At least 6 characters"/>
-          {mode==="register" && role==="user" && <Field testId="auth-confirm" label="Confirm password" type="password" value={f.confirm} onChange={e=>set("confirm",e.target.value)} error={errs.confirm} placeholder="Re-enter password"/>}
+          {mode==="register" && role==="user" && <Field label="Full name" value={f.name} onChange={e=>set("name",e.target.value)} error={errs.name} placeholder="Jane Doe"/>}
+          <Field label="Email" value={f.email} onChange={e=>set("email",e.target.value)} error={errs.email} placeholder="you@example.com"/>
+          <Field label="Password" type="password" value={f.password} onChange={e=>set("password",e.target.value)} error={errs.password} placeholder="At least 6 characters"/>
+          {mode==="register" && role==="user" && <Field label="Confirm password" type="password" value={f.confirm} onChange={e=>set("confirm",e.target.value)} error={errs.confirm} placeholder="Re-enter password"/>}
         </div>
-        <button data-testid="auth-submit" onClick={submit} disabled={busy} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white py-2.5 rounded-lg mt-5 font-medium">{busy ? "Please wait…" : (mode==="login"?"Sign in":"Create account")}</button>
-        {role==="user" && <p className="text-sm text-center text-slate-500 mt-4">{mode==="login"?"New here? ":"Already have an account? "}<button data-testid="auth-toggle-mode" onClick={()=>{setMode(mode==="login"?"register":"login"); setErrs({});}} className="text-indigo-600 font-medium">{mode==="login"?"Create an account":"Sign in"}</button></p>}
+        <button onClick={submit} disabled={busy} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white py-2.5 rounded-lg mt-5 font-medium">{busy ? "Please wait…" : (mode==="login"?"Sign in":"Create account")}</button>
+        {role==="user" && <p className="text-sm text-center text-slate-500 mt-4">{mode==="login"?"New here? ":"Already have an account? "}<button onClick={()=>{setMode(mode==="login"?"register":"login"); setErrs({});}} className="text-indigo-600 font-medium">{mode==="login"?"Create an account":"Sign in"}</button></p>}
         <div className="mt-5 pt-4 border-t text-xs text-slate-500"><p className="font-medium mb-1">Demo credentials:</p>{role==="admin" ? <p>Admin → <code className="bg-slate-100 px-1">admin@nova.com</code> / <code className="bg-slate-100 px-1">admin123</code></p> : <p>Register a new account to get started.</p>}</div>
       </div>
     </div>
@@ -218,12 +218,12 @@ function Account({ go }) {
   }, []);
   if (!currentUser) return null;
   return (
-    <div data-testid="page-account" className="max-w-3xl mx-auto px-4 py-8 fade">
+    <div className="max-w-3xl mx-auto px-4 py-8 fade">
       <h2 className="text-2xl font-bold mb-1">My Account</h2>
       <p className="text-slate-500 mb-6">{currentUser.name} · {currentUser.email} <span className="text-xs bg-slate-100 px-2 py-0.5 rounded ml-1">{currentUser.role}</span></p>
       <h3 className="font-semibold mb-3">Order history</h3>
       {err ? <ErrorBox msg={err}/> : orders===null ? <Spinner/> : orders.length===0 ? <p className="text-slate-400 text-sm">No orders yet. <button onClick={()=>go("shop")} className="text-indigo-600 underline">Start shopping</button></p> : (
-        <div data-testid="account-orders" className="space-y-3">{orders.map(o=>(<div key={o.id} data-testid="account-order-row" data-order-id={o.id} className="bg-white border rounded-lg p-4"><div className="flex justify-between"><span className="font-medium">Order #{o.id}</span><span className="font-bold">{money(o.total)}</span></div><p className="text-xs text-slate-500">{new Date(o.createdAt).toLocaleString()} · {o.status}</p><p className="text-sm text-slate-600 mt-1">{o.items.map(i=>i.name+" ×"+i.qty).join(", ")}</p></div>))}</div>
+        <div className="space-y-3">{orders.map(o=>(<div key={o.id} className="bg-white border rounded-lg p-4"><div className="flex justify-between"><span className="font-medium">Order #{o.id}</span><span className="font-bold">{money(o.total)}</span></div><p className="text-xs text-slate-500">{new Date(o.createdAt).toLocaleString()} · {o.status}</p><p className="text-sm text-slate-600 mt-1">{o.items.map(i=>i.name+" ×"+i.qty).join(", ")}</p></div>))}</div>
       )}
     </div>
   );
@@ -253,7 +253,7 @@ function Shop({ go, setProduct, query }) {
   const openProduct = (p) => { setProduct(p.id); go("product"); };
 
   return (
-    <div data-testid="page-shop" className="max-w-6xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="relative rounded-2xl overflow-hidden mb-8 bg-gradient-to-r from-indigo-600 to-violet-600 text-white p-8 md:p-12">
         <h1 className="text-3xl md:text-4xl font-bold max-w-md">Upgrade your everyday essentials</h1>
         <p className="mt-3 opacity-90 max-w-md">Thousands of quality products, fast delivery, and hassle-free returns.</p>
@@ -262,18 +262,18 @@ function Shop({ go, setProduct, query }) {
       {featured.length>0 && !query && (<div className="mb-10"><h2 className="text-lg font-bold mb-4">⭐ Featured</h2><div className="grid sm:grid-cols-3 gap-4">{featured.map(p=>(<button key={p.id} onClick={()=>openProduct(p)} className="text-left bg-white border rounded-xl overflow-hidden hover:shadow-md transition"><img src={p.image} className="h-36 w-full object-cover"/><div className="p-3"><p className="font-medium text-sm line-clamp-2">{p.name}</p><p className="font-bold mt-1">{money(p.price)}</p></div></button>))}</div></div>)}
       <div id="grid" className="flex flex-col md:flex-row gap-6">
         <aside className="md:w-56 shrink-0 space-y-5">
-          <div><h3 className="font-semibold text-sm mb-2">Category</h3><div className="space-y-1">{cats.map(c=>(<button key={c} data-testid={"filter-category-"+c} onClick={()=>setCat(c)} className={"block w-full text-left px-3 py-1.5 rounded-lg text-sm "+(cat===c?"bg-indigo-600 text-white":"hover:bg-slate-100")}>{c}</button>))}</div></div>
-          <div><h3 className="font-semibold text-sm mb-2">Max price: {money(maxPrice)}</h3><input data-testid="filter-max-price" type="range" min="10" max="250" value={maxPrice} onChange={e=>setMaxPrice(+e.target.value)} className="w-full accent-indigo-600"/></div>
+          <div><h3 className="font-semibold text-sm mb-2">Category</h3><div className="space-y-1">{cats.map(c=>(<button key={c} onClick={()=>setCat(c)} className={"block w-full text-left px-3 py-1.5 rounded-lg text-sm "+(cat===c?"bg-indigo-600 text-white":"hover:bg-slate-100")}>{c}</button>))}</div></div>
+          <div><h3 className="font-semibold text-sm mb-2">Max price: {money(maxPrice)}</h3><input type="range" min="10" max="250" value={maxPrice} onChange={e=>setMaxPrice(+e.target.value)} className="w-full accent-indigo-600"/></div>
         </aside>
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-4"><p data-testid="product-count" className="text-sm text-slate-500">{filtered.length} products</p><select data-testid="sort-select" value={sort} onChange={e=>setSort(e.target.value)} className="border rounded-lg px-3 py-1.5 text-sm"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="rating">Top Rated</option></select></div>
-          <div data-testid="product-grid" className="grid grid-cols-2 lg:grid-cols-3 gap-4">{filtered.map(p=>(
-            <div key={p.id} data-testid="product-card" data-product-id={p.id} data-product-name={p.name} data-product-price={p.price} className="bg-white rounded-xl border overflow-hidden flex flex-col group fade">
-              <div className="relative"><img data-testid="product-card-image" src={p.image} onClick={()=>openProduct(p)} className="h-40 w-full object-cover cursor-pointer bg-slate-100"/>{p.oldPrice && <span className="absolute top-2 left-2 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded">SALE</span>}<button data-testid="product-card-wish" onClick={()=>toggleWish(p)} className={"absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center "+(wishlist.includes(p.id)?"text-rose-500":"text-slate-400")}>♥</button></div>
-              <div className="p-3 flex flex-col flex-1"><span className="text-[11px] text-indigo-600 font-medium">{p.category}</span><h3 data-testid="product-card-name" onClick={()=>openProduct(p)} className="font-semibold text-sm mt-0.5 cursor-pointer line-clamp-2 hover:text-indigo-700">{p.name}</h3><div className="flex items-center gap-1 mt-1"><Stars value={p.rating}/><span className="text-[11px] text-slate-400">({p.reviews})</span></div><div className="flex items-center gap-2 mt-2"><span data-testid="product-card-price" className="font-bold">{money(p.price)}</span>{p.oldPrice && <span className="text-xs text-slate-400 line-through">{money(p.oldPrice)}</span>}</div><button data-testid="product-card-add" onClick={()=>addToCart(p)} disabled={p.stock<=0} className="mt-2 bg-indigo-600 text-white text-sm py-1.5 rounded-lg disabled:bg-slate-300 hover:bg-indigo-700">{p.stock<=0?"Sold out":"Add to cart"}</button></div>
+          <div className="flex items-center justify-between mb-4"><p className="text-sm text-slate-500">{filtered.length} products</p><select value={sort} onChange={e=>setSort(e.target.value)} className="border rounded-lg px-3 py-1.5 text-sm"><option value="featured">Featured</option><option value="low">Price: Low to High</option><option value="high">Price: High to Low</option><option value="rating">Top Rated</option></select></div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">{filtered.map(p=>(
+            <div key={p.id} className="bg-white rounded-xl border overflow-hidden flex flex-col group fade">
+              <div className="relative"><img src={p.image} onClick={()=>openProduct(p)} className="h-40 w-full object-cover cursor-pointer bg-slate-100"/>{p.oldPrice && <span className="absolute top-2 left-2 bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded">SALE</span>}<button onClick={()=>toggleWish(p)} className={"absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center "+(wishlist.includes(p.id)?"text-rose-500":"text-slate-400")}>♥</button></div>
+              <div className="p-3 flex flex-col flex-1"><span className="text-[11px] text-indigo-600 font-medium">{p.category}</span><h3 onClick={()=>openProduct(p)} className="font-semibold text-sm mt-0.5 cursor-pointer line-clamp-2 hover:text-indigo-700">{p.name}</h3><div className="flex items-center gap-1 mt-1"><Stars value={p.rating}/><span className="text-[11px] text-slate-400">({p.reviews})</span></div><div className="flex items-center gap-2 mt-2"><span className="font-bold">{money(p.price)}</span>{p.oldPrice && <span className="text-xs text-slate-400 line-through">{money(p.oldPrice)}</span>}</div><button onClick={()=>addToCart(p)} disabled={p.stock<=0} className="mt-2 bg-indigo-600 text-white text-sm py-1.5 rounded-lg disabled:bg-slate-300 hover:bg-indigo-700">{p.stock<=0?"Sold out":"Add to cart"}</button></div>
             </div>
           ))}</div>
-          {filtered.length===0 && <p data-testid="no-products" className="text-center text-slate-400 py-16">No products match your filters.</p>}
+          {filtered.length===0 && <p className="text-center text-slate-400 py-16">No products match your filters.</p>}
         </div>
       </div>
     </div>
@@ -290,21 +290,21 @@ function ProductPage({ id, go }) {
   if (err) return <div className="max-w-6xl mx-auto p-8"><ErrorBox msg={err}/><button onClick={()=>go("shop")} className="text-indigo-600 underline">Back to shop</button></div>;
   if (p===null) return <Spinner/>;
   return (
-    <div data-testid="page-product" data-product-id={p.id} className="max-w-6xl mx-auto px-4 py-6 fade">
-      <button data-testid="product-back" onClick={()=>go("shop")} className="text-sm text-slate-500 mb-4">← Back to shop</button>
+    <div className="max-w-6xl mx-auto px-4 py-6 fade">
+      <button onClick={()=>go("shop")} className="text-sm text-slate-500 mb-4">← Back to shop</button>
       <div className="grid md:grid-cols-2 gap-8">
         <img src={p.image} className="w-full rounded-2xl object-cover bg-slate-100 max-h-[420px]"/>
         <div>
           <span className="text-sm text-indigo-600 font-medium">{p.category}</span>
-          <h1 data-testid="product-name" className="text-2xl font-bold mt-1">{p.name}</h1>
+          <h1 className="text-2xl font-bold mt-1">{p.name}</h1>
           <div className="flex items-center gap-2 mt-2"><Stars value={p.rating}/><span className="text-sm text-slate-500">{p.rating} · {p.reviews} reviews</span></div>
-          <div className="flex items-center gap-3 mt-4"><span data-testid="product-price" className="text-3xl font-bold">{money(p.price)}</span>{p.oldPrice && <span className="text-lg text-slate-400 line-through">{money(p.oldPrice)}</span>}{p.oldPrice && <span className="bg-rose-100 text-rose-600 text-xs px-2 py-1 rounded font-medium">Save {money(p.oldPrice-p.price)}</span>}</div>
-          <p data-testid="product-description" className="text-slate-600 mt-4">{p.description}</p>
-          <p data-testid="product-stock" data-stock={p.stock} className={"mt-3 text-sm font-medium "+(p.stock>0?"text-green-600":"text-rose-500")}>{p.stock>0?`✓ In stock (${p.stock} available)`:"✗ Out of stock"}</p>
+          <div className="flex items-center gap-3 mt-4"><span className="text-3xl font-bold">{money(p.price)}</span>{p.oldPrice && <span className="text-lg text-slate-400 line-through">{money(p.oldPrice)}</span>}{p.oldPrice && <span className="bg-rose-100 text-rose-600 text-xs px-2 py-1 rounded font-medium">Save {money(p.oldPrice-p.price)}</span>}</div>
+          <p className="text-slate-600 mt-4">{p.description}</p>
+          <p className={"mt-3 text-sm font-medium "+(p.stock>0?"text-green-600":"text-rose-500")}>{p.stock>0?`✓ In stock (${p.stock} available)`:"✗ Out of stock"}</p>
           <div className="flex items-center gap-3 mt-6">
-            <div className="flex items-center border rounded-lg"><button data-testid="qty-decrease" onClick={()=>setQty(q=>Math.max(1,q-1))} className="px-3 py-2">−</button><span data-testid="qty-value" className="px-4">{qty}</span><button data-testid="qty-increase" onClick={()=>setQty(q=>q+1)} className="px-3 py-2">+</button></div>
-            <button data-testid="product-add-to-cart" onClick={()=>addToCart(p,qty)} disabled={p.stock<=0} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium disabled:bg-slate-300 hover:bg-indigo-700">Add to cart</button>
-            <button data-testid="product-wish" onClick={()=>toggleWish(p)} className={"w-12 h-12 border rounded-lg text-lg "+(wishlist.includes(p.id)?"text-rose-500 border-rose-300":"text-slate-400")}>♥</button>
+            <div className="flex items-center border rounded-lg"><button onClick={()=>setQty(q=>Math.max(1,q-1))} className="px-3 py-2">−</button><span className="px-4">{qty}</span><button onClick={()=>setQty(q=>q+1)} className="px-3 py-2">+</button></div>
+            <button onClick={()=>addToCart(p,qty)} disabled={p.stock<=0} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium disabled:bg-slate-300 hover:bg-indigo-700">Add to cart</button>
+            <button onClick={()=>toggleWish(p)} className={"w-12 h-12 border rounded-lg text-lg "+(wishlist.includes(p.id)?"text-rose-500 border-rose-300":"text-slate-400")}>♥</button>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-6 text-center text-xs text-slate-500"><div className="border rounded-lg p-2">🚚<br/>Free shipping $75+</div><div className="border rounded-lg p-2">↩️<br/>30-day returns</div><div className="border rounded-lg p-2">🔒<br/>Secure checkout</div></div>
         </div>
@@ -320,13 +320,13 @@ function Wishlist({ go }) {
   if (products===null) return <Spinner/>;
   const items = products.filter(p=>wishlist.includes(p.id));
   return (
-    <div data-testid="page-wishlist" className="max-w-5xl mx-auto px-4 py-8"><h2 className="text-2xl font-bold mb-6">Your Wishlist</h2>
-      {items.length===0 ? <p data-testid="wishlist-empty" className="text-slate-400">No saved items yet. <button onClick={()=>go("shop")} className="text-indigo-600 underline">Browse products</button></p> : (<div className="grid grid-cols-2 md:grid-cols-4 gap-4">{items.map(p=>(<div key={p.id} data-testid="wishlist-item" data-product-id={p.id} className="bg-white border rounded-xl overflow-hidden"><img src={p.image} className="h-36 w-full object-cover"/><div className="p-3"><p data-testid="wishlist-item-name" className="text-sm font-medium line-clamp-2">{p.name}</p><p className="font-bold mt-1">{money(p.price)}</p><div className="flex gap-2 mt-2"><button data-testid="wishlist-item-add" onClick={()=>addToCart(p)} className="flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded">Add</button><button data-testid="wishlist-item-remove" onClick={()=>toggleWish(p)} className="text-rose-500 text-xs px-2">Remove</button></div></div></div>))}</div>)}
+    <div className="max-w-5xl mx-auto px-4 py-8"><h2 className="text-2xl font-bold mb-6">Your Wishlist</h2>
+      {items.length===0 ? <p className="text-slate-400">No saved items yet. <button onClick={()=>go("shop")} className="text-indigo-600 underline">Browse products</button></p> : (<div className="grid grid-cols-2 md:grid-cols-4 gap-4">{items.map(p=>(<div key={p.id} className="bg-white border rounded-xl overflow-hidden"><img src={p.image} className="h-36 w-full object-cover"/><div className="p-3"><p className="text-sm font-medium line-clamp-2">{p.name}</p><p className="font-bold mt-1">{money(p.price)}</p><div className="flex gap-2 mt-2"><button onClick={()=>addToCart(p)} className="flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded">Add</button><button onClick={()=>toggleWish(p)} className="text-rose-500 text-xs px-2">Remove</button></div></div></div>))}</div>)}
     </div>
   );
 }
 
-function Row({l,v,green,testId}){ return <div className="flex justify-between"><span className="text-slate-500">{l}</span><span data-testid={testId} className={green?"text-green-600":""}>{v}</span></div>; }
+function Row({l,v,green}){ return <div className="flex justify-between"><span className="text-slate-500">{l}</span><span className={green?"text-green-600":""}>{v}</span></div>; }
 
 /* ---------------- cart + checkout (posts order to API) ---------------- */
 function Cart({ go }) {
@@ -369,50 +369,50 @@ function Cart({ go }) {
     finally { setBusy(false); }
   };
 
-  if (step==="done" && order) return (<div data-testid="order-confirmation" data-order-id={order.id} className="max-w-xl mx-auto px-4 py-16 text-center fade"><div className="text-6xl">🎉</div><h2 className="text-2xl font-bold mt-4">Thank you for your order!</h2><p className="text-slate-500 mt-2">Order <b data-testid="confirmation-order-id">#{order.id}</b> confirmed · <span data-testid="confirmation-total">{money(order.total)}</span></p><p className="text-sm text-slate-400 mt-1">Estimated delivery: 3–5 business days</p><button data-testid="confirmation-continue" onClick={()=>go("shop")} className="mt-6 bg-indigo-600 text-white px-6 py-2.5 rounded-lg">Continue shopping</button></div>);
-  if (cart.length===0) return (<div data-testid="cart-empty" className="max-w-4xl mx-auto px-4 py-16 text-center"><div className="text-5xl">🛒</div><p className="text-slate-500 mt-4">Your cart is empty.</p><button data-testid="cart-empty-shop" onClick={()=>go("shop")} className="mt-4 bg-indigo-600 text-white px-5 py-2.5 rounded-lg">Start shopping</button></div>);
+  if (step==="done" && order) return (<div className="max-w-xl mx-auto px-4 py-16 text-center fade"><div className="text-6xl">🎉</div><h2 className="text-2xl font-bold mt-4">Thank you for your order!</h2><p className="text-slate-500 mt-2">Order <b>#{order.id}</b> confirmed · {money(order.total)}</p><p className="text-sm text-slate-400 mt-1">Estimated delivery: 3–5 business days</p><button onClick={()=>go("shop")} className="mt-6 bg-indigo-600 text-white px-6 py-2.5 rounded-lg">Continue shopping</button></div>);
+  if (cart.length===0) return (<div className="max-w-4xl mx-auto px-4 py-16 text-center"><div className="text-5xl">🛒</div><p className="text-slate-500 mt-4">Your cart is empty.</p><button onClick={()=>go("shop")} className="mt-4 bg-indigo-600 text-white px-5 py-2.5 rounded-lg">Start shopping</button></div>);
 
   const Summary = () => (
     <div className="bg-white border rounded-xl p-5 h-fit"><h3 className="font-semibold mb-3">Order summary</h3>
-      <div className="space-y-1 text-sm"><Row testId="summary-subtotal" l="Subtotal" v={money(subtotal)}/>{discount>0 && <Row testId="summary-discount" l="Discount" v={"−"+money(discount)} green/>}<Row testId="summary-shipping" l="Shipping" v={shipping===0?"Free":money(shipping)}/><Row testId="summary-tax" l="Tax (8%)" v={money(tax)}/></div>
-      <div className="flex justify-between mt-3 pt-3 border-t font-bold text-lg"><span>Total</span><span data-testid="summary-total">{money(total)}</span></div>
-      {step==="cart" && <div className="flex gap-2 mt-4"><input data-testid="coupon-input" value={coupon} onChange={e=>setCoupon(e.target.value)} placeholder="Coupon code" className="flex-1 border rounded px-3 py-2 text-sm"/><button data-testid="coupon-apply" onClick={applyCoupon} className="bg-slate-800 text-white text-sm px-3 rounded">Apply</button></div>}
+      <div className="space-y-1 text-sm"><Row l="Subtotal" v={money(subtotal)}/>{discount>0 && <Row l="Discount" v={"−"+money(discount)} green/>}<Row l="Shipping" v={shipping===0?"Free":money(shipping)}/><Row l="Tax (8%)" v={money(tax)}/></div>
+      <div className="flex justify-between mt-3 pt-3 border-t font-bold text-lg"><span>Total</span><span>{money(total)}</span></div>
+      {step==="cart" && <div className="flex gap-2 mt-4"><input value={coupon} onChange={e=>setCoupon(e.target.value)} placeholder="Coupon code" className="flex-1 border rounded px-3 py-2 text-sm"/><button onClick={applyCoupon} className="bg-slate-800 text-white text-sm px-3 rounded">Apply</button></div>}
       <p className="text-xs text-slate-400 mt-2">Try: SAVE10 or WELCOME5. Final total is calculated by the server.</p>
     </div>
   );
   return (
-    <div data-testid={step==="cart"?"page-cart":"page-checkout"} className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex items-center gap-2 mb-6 text-sm"><span className={step==="cart"?"font-bold text-indigo-700":"text-slate-400"}>1. Cart</span><span className="text-slate-300">→</span><span className={step==="checkout"?"font-bold text-indigo-700":"text-slate-400"}>2. Checkout</span></div>
       {step==="cart" ? (
         <div className="grid md:grid-cols-3 gap-6">
-          <div data-testid="cart-items" className="md:col-span-2 space-y-3">{cart.map(i=>(<div key={i.id} data-testid="cart-item" data-product-id={i.id} data-product-name={i.name} className="bg-white border rounded-lg p-3 flex items-center gap-3"><img src={i.image} className="w-16 h-16 object-cover rounded bg-slate-100"/><div className="flex-1"><p data-testid="cart-item-name" className="font-medium text-sm">{i.name}</p><p className="text-sm text-slate-500">{money(i.price)}</p></div><div className="flex items-center border rounded"><button data-testid="cart-item-decrease" onClick={()=>setQty(i.id,i.qty-1)} className="px-2 py-1">−</button><span data-testid="cart-item-qty" className="px-3 text-sm">{i.qty}</span><button data-testid="cart-item-increase" onClick={()=>setQty(i.id,i.qty+1)} className="px-2 py-1">+</button></div><span data-testid="cart-item-subtotal" className="w-20 text-right font-semibold text-sm">{money(i.price*i.qty)}</span><button data-testid="cart-item-remove" onClick={()=>remove(i.id)} className="text-rose-500 text-lg px-1">×</button></div>))}</div>
-          <div className="space-y-3"><Summary/><button data-testid="proceed-to-checkout" onClick={()=>setStep("checkout")} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium">Proceed to checkout</button></div>
+          <div className="md:col-span-2 space-y-3">{cart.map(i=>(<div key={i.id} className="bg-white border rounded-lg p-3 flex items-center gap-3"><img src={i.image} className="w-16 h-16 object-cover rounded bg-slate-100"/><div className="flex-1"><p className="font-medium text-sm">{i.name}</p><p className="text-sm text-slate-500">{money(i.price)}</p></div><div className="flex items-center border rounded"><button onClick={()=>setQty(i.id,i.qty-1)} className="px-2 py-1">−</button><span className="px-3 text-sm">{i.qty}</span><button onClick={()=>setQty(i.id,i.qty+1)} className="px-2 py-1">+</button></div><span className="w-20 text-right font-semibold text-sm">{money(i.price*i.qty)}</span><button onClick={()=>remove(i.id)} className="text-rose-500 text-lg px-1">×</button></div>))}</div>
+          <div className="space-y-3"><Summary/><button onClick={()=>setStep("checkout")} className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium">Proceed to checkout</button></div>
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <div className="bg-white border rounded-xl p-5"><h3 className="font-semibold mb-4">Shipping details</h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2"><Field testId="checkout-name" label="Full name" value={info.name} onChange={e=>setInfo({...info,name:e.target.value})} error={ierr.name}/></div>
-                <Field testId="checkout-email" label="Email" value={info.email} onChange={e=>setInfo({...info,email:e.target.value})} error={ierr.email}/>
-                <Field testId="checkout-phone" label="Phone" value={info.phone} onChange={e=>setInfo({...info,phone:e.target.value})} error={ierr.phone}/>
-                <div className="col-span-2"><Field testId="checkout-address" label="Address" value={info.address} onChange={e=>setInfo({...info,address:e.target.value})} error={ierr.address}/></div>
-                <Field testId="checkout-city" label="City" value={info.city} onChange={e=>setInfo({...info,city:e.target.value})} error={ierr.city}/>
-                <Field testId="checkout-zip" label="ZIP / Postal" value={info.zip} onChange={e=>setInfo({...info,zip:e.target.value})} error={ierr.zip}/>
+                <div className="col-span-2"><Field label="Full name" value={info.name} onChange={e=>setInfo({...info,name:e.target.value})} error={ierr.name}/></div>
+                <Field label="Email" value={info.email} onChange={e=>setInfo({...info,email:e.target.value})} error={ierr.email}/>
+                <Field label="Phone" value={info.phone} onChange={e=>setInfo({...info,phone:e.target.value})} error={ierr.phone}/>
+                <div className="col-span-2"><Field label="Address" value={info.address} onChange={e=>setInfo({...info,address:e.target.value})} error={ierr.address}/></div>
+                <Field label="City" value={info.city} onChange={e=>setInfo({...info,city:e.target.value})} error={ierr.city}/>
+                <Field label="ZIP / Postal" value={info.zip} onChange={e=>setInfo({...info,zip:e.target.value})} error={ierr.zip}/>
               </div>
             </div>
             <div className="bg-white border rounded-xl p-5"><h3 className="font-semibold mb-3">Payment method</h3>
-              <div className="space-y-2">{[["card","💳 Credit / Debit Card"],["paypal","🅿️ PayPal"],["cod","💵 Cash on Delivery"]].map(([v,l])=>(<label key={v} data-testid={"payment-option-"+v} className={"flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer text-sm "+(info.payment===v?"border-indigo-500 bg-indigo-50":"")}><input data-testid={"payment-radio-"+v} type="radio" checked={info.payment===v} onChange={()=>setInfo({...info,payment:v})}/>{l}</label>))}</div>
+              <div className="space-y-2">{[["card","💳 Credit / Debit Card"],["paypal","🅿️ PayPal"],["cod","💵 Cash on Delivery"]].map(([v,l])=>(<label key={v} className={"flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer text-sm "+(info.payment===v?"border-indigo-500 bg-indigo-50":"")}><input type="radio" checked={info.payment===v} onChange={()=>setInfo({...info,payment:v})}/>{l}</label>))}</div>
               {info.payment==="card" && (<div className="mt-4 space-y-3 border-t pt-4">
-                <div className="relative"><Field testId="card-number" label="Card number" value={card.number} onChange={e=>{setCard({...card,number:formatCardNumber(e.target.value)}); setCerr(c=>({...c,number:undefined}));}} error={cerr.number} placeholder="1234 5678 9012 3456" inputMode="numeric"/>{brand && <span className="absolute right-3 top-7 text-xs bg-slate-100 px-2 py-0.5 rounded">{brand}</span>}</div>
-                <Field testId="card-name" label="Name on card" value={card.name} onChange={e=>{setCard({...card,name:e.target.value}); setCerr(c=>({...c,name:undefined}));}} error={cerr.name} placeholder="JANE DOE"/>
-                <div className="grid grid-cols-2 gap-3"><Field testId="card-expiry" label="Expiry (MM/YY)" value={card.expiry} onChange={e=>{setCard({...card,expiry:formatExpiry(e.target.value)}); setCerr(c=>({...c,expiry:undefined}));}} error={cerr.expiry} placeholder="12/28" inputMode="numeric"/><Field testId="card-cvc" label="CVC" value={card.cvc} onChange={e=>{setCard({...card,cvc:e.target.value.replace(/\D/g,"").slice(0,4)}); setCerr(c=>({...c,cvc:undefined}));}} error={cerr.cvc} placeholder={brand==="Amex"?"4 digits":"3 digits"} inputMode="numeric"/></div>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800"><p className="font-semibold mb-1">🧪 Test cards (safe — not real accounts):</p>{TEST_CARDS.map(c=>(<button key={c.number} data-testid={"test-card-"+c.brand.toLowerCase().replace(/\s+/g,"-")} onClick={()=>{setCard({number:c.number,name:"TEST USER",expiry:c.exp,cvc:c.cvc}); setCerr({});}} className="block w-full text-left hover:bg-amber-100 rounded px-1 py-0.5"><b>{c.brand}:</b> {c.number} · CVC {c.cvc} · {c.exp} <span className="text-amber-600">(click to fill)</span></button>))}</div>
+                <div className="relative"><Field label="Card number" value={card.number} onChange={e=>{setCard({...card,number:formatCardNumber(e.target.value)}); setCerr(c=>({...c,number:undefined}));}} error={cerr.number} placeholder="1234 5678 9012 3456" inputMode="numeric"/>{brand && <span className="absolute right-3 top-7 text-xs bg-slate-100 px-2 py-0.5 rounded">{brand}</span>}</div>
+                <Field label="Name on card" value={card.name} onChange={e=>{setCard({...card,name:e.target.value}); setCerr(c=>({...c,name:undefined}));}} error={cerr.name} placeholder="JANE DOE"/>
+                <div className="grid grid-cols-2 gap-3"><Field label="Expiry (MM/YY)" value={card.expiry} onChange={e=>{setCard({...card,expiry:formatExpiry(e.target.value)}); setCerr(c=>({...c,expiry:undefined}));}} error={cerr.expiry} placeholder="12/28" inputMode="numeric"/><Field label="CVC" value={card.cvc} onChange={e=>{setCard({...card,cvc:e.target.value.replace(/\D/g,"").slice(0,4)}); setCerr(c=>({...c,cvc:undefined}));}} error={cerr.cvc} placeholder={brand==="Amex"?"4 digits":"3 digits"} inputMode="numeric"/></div>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800"><p className="font-semibold mb-1">🧪 Test cards (safe — not real accounts):</p>{TEST_CARDS.map(c=>(<button key={c.number} onClick={()=>{setCard({number:c.number,name:"TEST USER",expiry:c.exp,cvc:c.cvc}); setCerr({});}} className="block w-full text-left hover:bg-amber-100 rounded px-1 py-0.5"><b>{c.brand}:</b> {c.number} · CVC {c.cvc} · {c.exp} <span className="text-amber-600">(click to fill)</span></button>))}</div>
               </div>)}
             </div>
-            <button data-testid="back-to-cart" onClick={()=>setStep("cart")} className="text-sm text-slate-500">← Back to cart</button>
+            <button onClick={()=>setStep("cart")} className="text-sm text-slate-500">← Back to cart</button>
           </div>
-          <div className="space-y-3"><Summary/><button data-testid="place-order" onClick={placeOrder} disabled={busy} className="w-full bg-indigo-600 disabled:bg-slate-300 text-white py-3 rounded-lg font-medium">{busy?"Placing order…":"Place order · "+money(total)}</button></div>
+          <div className="space-y-3"><Summary/><button onClick={placeOrder} disabled={busy} className="w-full bg-indigo-600 disabled:bg-slate-300 text-white py-3 rounded-lg font-medium">{busy?"Placing order…":"Place order · "+money(total)}</button></div>
         </div>
       )}
     </div>
@@ -422,21 +422,21 @@ function Cart({ go }) {
 /* ---------------- admin (all data from API) ---------------- */
 function Admin({ go }) {
   const { currentUser } = useContext(Store);
-  if (!currentUser || currentUser.role!=="admin") return (<div data-testid="admin-denied" className="max-w-md mx-auto px-4 py-20 text-center"><div className="text-5xl">🔒</div><h2 className="text-xl font-bold mt-4">Admin access required</h2><p className="text-slate-500 mt-2">Please sign in with an administrator account.</p><button onClick={()=>go("auth")} className="mt-5 bg-indigo-600 text-white px-5 py-2.5 rounded-lg">Go to sign in</button></div>);
+  if (!currentUser || currentUser.role!=="admin") return (<div className="max-w-md mx-auto px-4 py-20 text-center"><div className="text-5xl">🔒</div><h2 className="text-xl font-bold mt-4">Admin access required</h2><p className="text-slate-500 mt-2">Please sign in with an administrator account.</p><button onClick={()=>go("auth")} className="mt-5 bg-indigo-600 text-white px-5 py-2.5 rounded-lg">Go to sign in</button></div>);
   return <AdminPanel/>;
 }
 function AdminPanel() {
   const [tab, setTab] = useState("dashboard");
   const tabs = [["dashboard","📊 Dashboard"],["orders","📦 Orders"],["catalog","🏷️ Catalog"],["customers","👥 Customers"]];
   return (
-    <div data-testid="page-admin" className="max-w-6xl mx-auto px-4 py-6">
+    <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6"><h2 className="text-2xl font-bold">Store Admin</h2></div>
-      <div className="flex gap-2 mb-6 flex-wrap">{tabs.map(([t,l])=>(<button key={t} data-testid={"admin-tab-"+t} onClick={()=>setTab(t)} className={"px-4 py-2 rounded-lg text-sm "+(tab===t?"bg-indigo-600 text-white":"bg-white border")}>{l}</button>))}</div>
+      <div className="flex gap-2 mb-6 flex-wrap">{tabs.map(([t,l])=>(<button key={t} onClick={()=>setTab(t)} className={"px-4 py-2 rounded-lg text-sm "+(tab===t?"bg-indigo-600 text-white":"bg-white border")}>{l}</button>))}</div>
       {tab==="dashboard" && <Dashboard/>}{tab==="orders" && <OrdersAdmin/>}{tab==="catalog" && <CatalogAdmin/>}{tab==="customers" && <CustomersAdmin/>}
     </div>
   );
 }
-function Stat({label,value,testId}){ return <div className="bg-white border rounded-xl p-4"><p className="text-sm text-slate-500">{label}</p><p data-testid={testId} className="text-2xl font-bold mt-1">{value}</p></div>; }
+function Stat({label,value}){ return <div className="bg-white border rounded-xl p-4"><p className="text-sm text-slate-500">{label}</p><p className="text-2xl font-bold mt-1">{value}</p></div>; }
 
 function Dashboard() {
   const { token } = useContext(Store);
@@ -448,9 +448,9 @@ function Dashboard() {
   const maxSold = s.bestSellers[0]?.qty || 1;
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4"><Stat testId="stat-revenue" label="Revenue" value={money(s.revenue)}/><Stat testId="stat-orders" label="Orders" value={s.orders}/><Stat testId="stat-customers" label="Customers" value={s.customers}/><Stat testId="stat-products" label="Products" value={s.products}/></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4"><Stat label="Revenue" value={money(s.revenue)}/><Stat label="Orders" value={s.orders}/><Stat label="Customers" value={s.customers}/><Stat label="Products" value={s.products}/></div>
       <div className="bg-white border rounded-xl p-5"><h3 className="font-semibold mb-3">🔥 Best sellers</h3>{s.bestSellers.length===0 ? <p className="text-slate-400 text-sm">No sales yet.</p> : s.bestSellers.map(b=>(<div key={b.name} className="mb-2"><div className="flex justify-between text-sm"><span className="truncate pr-2">{b.name}</span><span className="text-slate-500">{b.qty} sold</span></div><div className="h-2 bg-slate-100 rounded mt-1"><div className="h-2 bg-indigo-500 rounded" style={{width:(b.qty/maxSold*100)+"%"}}></div></div></div>))}</div>
-      <div className="bg-white border rounded-xl p-5"><h3 className="font-semibold mb-1">Average order value</h3><p data-testid="stat-avg-order" className="text-2xl font-bold">{money(s.avgOrder)}</p></div>
+      <div className="bg-white border rounded-xl p-5"><h3 className="font-semibold mb-1">Average order value</h3><p className="text-2xl font-bold">{money(s.avgOrder)}</p></div>
     </div>
   );
 }
@@ -470,12 +470,12 @@ function OrdersAdmin() {
   const badge = { Pending:"bg-amber-100 text-amber-700", Processing:"bg-blue-100 text-blue-700", Shipped:"bg-violet-100 text-violet-700", Delivered:"bg-green-100 text-green-700", Cancelled:"bg-rose-100 text-rose-700" };
   return (
     <div>
-      <div className="flex flex-wrap gap-3 mb-4"><input data-testid="orders-search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Search by name or order #" className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px]"/><select data-testid="orders-status-filter" value={filter} onChange={e=>setFilter(e.target.value)} className="border rounded-lg px-3 py-2 text-sm"><option>All</option>{statuses.map(st=><option key={st}>{st}</option>)}</select></div>
-      {shown.length===0 ? <p data-testid="orders-empty" className="text-slate-400 py-8 text-center">No orders found.</p> : (<div data-testid="orders-list" className="space-y-3">{shown.map(o=>(
-        <div key={o.id} data-testid="order-row" data-order-id={o.id} data-order-status={o.status} className="bg-white border rounded-xl p-4">
+      <div className="flex flex-wrap gap-3 mb-4"><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search by name or order #" className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px]"/><select value={filter} onChange={e=>setFilter(e.target.value)} className="border rounded-lg px-3 py-2 text-sm"><option>All</option>{statuses.map(st=><option key={st}>{st}</option>)}</select></div>
+      {shown.length===0 ? <p className="text-slate-400 py-8 text-center">No orders found.</p> : (<div className="space-y-3">{shown.map(o=>(
+        <div key={o.id} className="bg-white border rounded-xl p-4">
           <div className="flex flex-wrap justify-between gap-3">
-            <div><div className="flex items-center gap-2"><p data-testid="order-row-id" className="font-semibold">Order #{o.id}</p><span data-testid="order-row-status" className={"text-xs px-2 py-0.5 rounded "+badge[o.status]}>{o.status}</span></div><p className="text-xs text-slate-500 mt-0.5">{new Date(o.createdAt).toLocaleString()}</p><p className="text-sm mt-1">{o.customer.name} · {o.customer.email} {o.customer.phone&&"· "+o.customer.phone}</p><p className="text-xs text-slate-500">{o.customer.address}, {o.customer.city} {o.customer.zip}</p><p className="text-xs text-slate-500 mt-0.5">Payment: {o.payment}{o.cardLast4?" ····"+o.cardLast4:""}</p></div>
-            <div className="text-right"><p data-testid="order-row-total" className="font-bold text-lg">{money(o.total)}</p><select data-testid="order-row-status-select" value={o.status} onChange={e=>setStatus(o.id,e.target.value)} className="border rounded px-2 py-1 text-sm mt-1">{statuses.map(st=><option key={st}>{st}</option>)}</select><button data-testid="order-row-delete" onClick={()=>del(o.id)} className="block text-rose-500 text-xs mt-2 ml-auto">Delete</button></div>
+            <div><div className="flex items-center gap-2"><p className="font-semibold">Order #{o.id}</p><span className={"text-xs px-2 py-0.5 rounded "+badge[o.status]}>{o.status}</span></div><p className="text-xs text-slate-500 mt-0.5">{new Date(o.createdAt).toLocaleString()}</p><p className="text-sm mt-1">{o.customer.name} · {o.customer.email} {o.customer.phone&&"· "+o.customer.phone}</p><p className="text-xs text-slate-500">{o.customer.address}, {o.customer.city} {o.customer.zip}</p><p className="text-xs text-slate-500 mt-0.5">Payment: {o.payment}{o.cardLast4?" ····"+o.cardLast4:""}</p></div>
+            <div className="text-right"><p className="font-bold text-lg">{money(o.total)}</p><select value={o.status} onChange={e=>setStatus(o.id,e.target.value)} className="border rounded px-2 py-1 text-sm mt-1">{statuses.map(st=><option key={st}>{st}</option>)}</select><button onClick={()=>del(o.id)} className="block text-rose-500 text-xs mt-2 ml-auto">Delete</button></div>
           </div>
           <div className="mt-3 pt-3 border-t text-sm text-slate-600 flex flex-wrap gap-x-4 gap-y-1">{o.items.map(i=><span key={i.id}>{i.name} ×{i.qty} <span className="text-slate-400">({money(i.price*i.qty)})</span></span>)}</div>
         </div>
@@ -489,7 +489,7 @@ function CustomersAdmin() {
   const [tab2, setTab2] = useState("list");
   return (
     <div>
-      <div className="flex gap-2 mb-4"><button data-testid="customers-tab-list" onClick={()=>setTab2("list")} className={"px-3 py-1.5 rounded-lg text-sm "+(tab2==="list"?"bg-slate-800 text-white":"bg-white border")}>Customer list</button><button data-testid="customers-tab-add" onClick={()=>setTab2("add")} className={"px-3 py-1.5 rounded-lg text-sm "+(tab2==="add"?"bg-slate-800 text-white":"bg-white border")}>➕ Add customer</button></div>
+      <div className="flex gap-2 mb-4"><button onClick={()=>setTab2("list")} className={"px-3 py-1.5 rounded-lg text-sm "+(tab2==="list"?"bg-slate-800 text-white":"bg-white border")}>Customer list</button><button onClick={()=>setTab2("add")} className={"px-3 py-1.5 rounded-lg text-sm "+(tab2==="add"?"bg-slate-800 text-white":"bg-white border")}>➕ Add customer</button></div>
       {tab2==="list" ? <CustomerList token={token}/> : <AddCustomer token={token} onDone={()=>setTab2("list")}/>}
     </div>
   );
@@ -500,8 +500,8 @@ function CustomerList({ token }) {
   useEffect(()=>{ fetchC(); },[fetchC]);
   if (err) return <ErrorBox msg={err} onRetry={fetchC}/>;
   if (customers===null) return <Spinner/>;
-  if (customers.length===0) return <p data-testid="customers-empty" className="text-slate-400">No registered customers yet.</p>;
-  return <div data-testid="customers-list" className="space-y-2">{customers.map(u=>(<div key={u.id} data-testid="customer-row" data-customer-id={u.id} className="bg-white border rounded-lg p-4 flex justify-between items-center"><div><p data-testid="customer-row-name" className="font-medium">{u.name}</p><p data-testid="customer-row-email" className="text-sm text-slate-500">{u.email}</p></div><div className="text-right text-sm"><p data-testid="customer-row-orders">{u.orders} orders</p><p className="text-slate-500"><span data-testid="customer-row-spent">{money(u.totalSpent)}</span> spent</p></div></div>))}</div>;
+  if (customers.length===0) return <p className="text-slate-400">No registered customers yet.</p>;
+  return <div className="space-y-2">{customers.map(u=>(<div key={u.id} className="bg-white border rounded-lg p-4 flex justify-between items-center"><div><p className="font-medium">{u.name}</p><p className="text-sm text-slate-500">{u.email}</p></div><div className="text-right text-sm"><p>{u.orders} orders</p><p className="text-slate-500">{money(u.totalSpent)} spent</p></div></div>))}</div>;
 }
 function AddCustomer({ token, onDone }) {
   const { toast } = useContext(Store);
@@ -521,12 +521,12 @@ function AddCustomer({ token, onDone }) {
     <div className="bg-white border rounded-xl p-5 max-w-md">
       <h3 className="font-semibold mb-3">Add a customer</h3>
       <div className="space-y-2">
-        <Field testId="add-customer-name" label="Name" value={f.name} onChange={e=>set("name",e.target.value)} error={errs.name}/>
-        <Field testId="add-customer-email" label="Email" value={f.email} onChange={e=>set("email",e.target.value)} error={errs.email}/>
-        <Field testId="add-customer-password" label="Password" type="password" value={f.password} onChange={e=>set("password",e.target.value)} error={errs.password}/>
-        <div><label className="block text-xs font-medium text-slate-600 mb-1">Role</label><select data-testid="add-customer-role" value={f.role} onChange={e=>set("role",e.target.value)} className="w-full border rounded px-3 py-2 text-sm"><option value="user">Customer</option><option value="admin">Admin</option></select></div>
+        <Field label="Name" value={f.name} onChange={e=>set("name",e.target.value)} error={errs.name}/>
+        <Field label="Email" value={f.email} onChange={e=>set("email",e.target.value)} error={errs.email}/>
+        <Field label="Password" type="password" value={f.password} onChange={e=>set("password",e.target.value)} error={errs.password}/>
+        <div><label className="block text-xs font-medium text-slate-600 mb-1">Role</label><select value={f.role} onChange={e=>set("role",e.target.value)} className="w-full border rounded px-3 py-2 text-sm"><option value="user">Customer</option><option value="admin">Admin</option></select></div>
       </div>
-      <button data-testid="add-customer-submit" onClick={submit} disabled={busy} className="w-full bg-indigo-600 disabled:bg-slate-300 text-white py-2.5 rounded-lg mt-3">{busy?"Adding…":"Add customer"}</button>
+      <button onClick={submit} disabled={busy} className="w-full bg-indigo-600 disabled:bg-slate-300 text-white py-2.5 rounded-lg mt-3">{busy?"Adding…":"Add customer"}</button>
     </div>
   );
 }
@@ -563,18 +563,18 @@ function CatalogAdmin() {
     <div className="grid md:grid-cols-3 gap-6">
       <div className="bg-white border rounded-xl p-5 h-fit md:sticky md:top-24"><h3 className="font-semibold mb-3">{editId?"✏️ Edit product":"➕ Add product"}</h3>
         <div className="space-y-2">
-          <Field testId="catalog-name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} error={errs.name} placeholder="Name *"/>
-          <div className="grid grid-cols-2 gap-2"><Field testId="catalog-price" value={form.price} onChange={e=>setForm({...form,price:e.target.value})} error={errs.price} type="number" placeholder="Price *"/><Field testId="catalog-old-price" value={form.oldPrice} onChange={e=>setForm({...form,oldPrice:e.target.value})} type="number" placeholder="Old price"/></div>
-          <div className="grid grid-cols-2 gap-2"><Field testId="catalog-category" value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="Category"/><Field testId="catalog-stock" value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})} error={errs.stock} type="number" placeholder="Stock"/></div>
-          <Field testId="catalog-image" value={form.image} onChange={e=>setForm({...form,image:e.target.value})} placeholder="Image URL"/>
-          <textarea data-testid="catalog-description" placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full border rounded px-3 py-2 text-sm" rows="2"/>
-          <label className="flex items-center gap-2 text-sm"><input data-testid="catalog-featured" type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured product</label>
+          <Field value={form.name} onChange={e=>setForm({...form,name:e.target.value})} error={errs.name} placeholder="Name *"/>
+          <div className="grid grid-cols-2 gap-2"><Field value={form.price} onChange={e=>setForm({...form,price:e.target.value})} error={errs.price} type="number" placeholder="Price *"/><Field value={form.oldPrice} onChange={e=>setForm({...form,oldPrice:e.target.value})} type="number" placeholder="Old price"/></div>
+          <div className="grid grid-cols-2 gap-2"><Field value={form.category} onChange={e=>setForm({...form,category:e.target.value})} placeholder="Category"/><Field value={form.stock} onChange={e=>setForm({...form,stock:e.target.value})} error={errs.stock} type="number" placeholder="Stock"/></div>
+          <Field value={form.image} onChange={e=>setForm({...form,image:e.target.value})} placeholder="Image URL"/>
+          <textarea placeholder="Description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})} className="w-full border rounded px-3 py-2 text-sm" rows="2"/>
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.featured} onChange={e=>setForm({...form,featured:e.target.checked})}/> Featured product</label>
         </div>
-        <button data-testid="catalog-submit" onClick={submit} disabled={busy} className="w-full bg-indigo-600 disabled:bg-slate-300 text-white py-2.5 rounded-lg mt-3">{busy?"Saving…":(editId?"Save changes":"Add product")}</button>
-        {editId && <button data-testid="catalog-cancel" onClick={()=>{setForm(blank);setEditId(null);setErrs({});}} className="w-full text-sm text-slate-500 mt-2">Cancel</button>}
+        <button onClick={submit} disabled={busy} className="w-full bg-indigo-600 disabled:bg-slate-300 text-white py-2.5 rounded-lg mt-3">{busy?"Saving…":(editId?"Save changes":"Add product")}</button>
+        {editId && <button onClick={()=>{setForm(blank);setEditId(null);setErrs({});}} className="w-full text-sm text-slate-500 mt-2">Cancel</button>}
       </div>
-      <div className="md:col-span-2"><input data-testid="catalog-search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Search products…" className="w-full border rounded-lg px-3 py-2 text-sm mb-3"/>
-        <div data-testid="catalog-list" className="space-y-2">{shown.map(p=>(<div key={p.id} data-testid="catalog-row" data-product-id={p.id} data-product-name={p.name} className="bg-white border rounded-lg p-3 flex items-center gap-3"><img src={p.image} className="w-14 h-14 object-cover rounded bg-slate-100"/><div className="flex-1 min-w-0"><p data-testid="catalog-row-name" className="font-medium truncate">{p.name} {p.featured&&<span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded ml-1">Featured</span>}</p><p className="text-sm text-slate-500">{money(p.price)} · {p.category||"—"} · Stock: <span className={p.stock<20?"text-amber-600 font-medium":""}>{p.stock}</span></p></div><button data-testid="catalog-row-edit" onClick={()=>edit(p)} className="text-indigo-600 text-sm">Edit</button><button data-testid="catalog-row-delete" onClick={()=>del(p.id)} className="text-rose-500 text-sm">Delete</button></div>))}</div>
+      <div className="md:col-span-2"><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search products…" className="w-full border rounded-lg px-3 py-2 text-sm mb-3"/>
+        <div className="space-y-2">{shown.map(p=>(<div key={p.id} className="bg-white border rounded-lg p-3 flex items-center gap-3"><img src={p.image} className="w-14 h-14 object-cover rounded bg-slate-100"/><div className="flex-1 min-w-0"><p className="font-medium truncate">{p.name} {p.featured&&<span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded ml-1">Featured</span>}</p><p className="text-sm text-slate-500">{money(p.price)} · {p.category||"—"} · Stock: <span className={p.stock<20?"text-amber-600 font-medium":""}>{p.stock}</span></p></div><button onClick={()=>edit(p)} className="text-indigo-600 text-sm">Edit</button><button onClick={()=>del(p.id)} className="text-rose-500 text-sm">Delete</button></div>))}</div>
       </div>
     </div>
   );
@@ -589,12 +589,12 @@ function ApiBadge() {
       {open ? (
         <div className="bg-white border rounded-xl p-4 shadow-lg w-80 fade">
           <p className="text-xs font-semibold mb-2">API server URL</p>
-          <input data-testid="api-url-input" value={url} onChange={e=>setUrl(e.target.value)} className="w-full border rounded px-3 py-2 text-sm mb-2"/>
-          <div className="flex gap-2"><button data-testid="api-url-save" onClick={()=>{ localStorage.setItem("ns_api_base",url); location.reload(); }} className="flex-1 bg-indigo-600 text-white text-sm py-2 rounded-lg">Save & reload</button><button onClick={()=>setOpen(false)} className="text-slate-500 text-sm px-3">Close</button></div>
+          <input value={url} onChange={e=>setUrl(e.target.value)} className="w-full border rounded px-3 py-2 text-sm mb-2"/>
+          <div className="flex gap-2"><button onClick={()=>{ localStorage.setItem("ns_api_base",url); location.reload(); }} className="flex-1 bg-indigo-600 text-white text-sm py-2 rounded-lg">Save & reload</button><button onClick={()=>setOpen(false)} className="text-slate-500 text-sm px-3">Close</button></div>
           <p className="text-[11px] text-slate-400 mt-2">Point this at your deployed API when hosting.</p>
         </div>
       ) : (
-        <button data-testid="api-badge" onClick={()=>setOpen(true)} className="bg-white border rounded-full px-3 py-1.5 shadow text-xs text-slate-500 hover:text-slate-700">⚙️ API: {API_BASE.replace(/^https?:\/\//,"")}</button>
+        <button onClick={()=>setOpen(true)} className="bg-white border rounded-full px-3 py-1.5 shadow text-xs text-slate-500 hover:text-slate-700">⚙️ API: {API_BASE.replace(/^https?:\/\//,"")}</button>
       )}
     </div>
   );
